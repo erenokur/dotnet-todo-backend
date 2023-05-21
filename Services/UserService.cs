@@ -5,9 +5,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using dotnet_todo_backend.Entities;
 using dotnet_todo_backend.Helpers;
 using dotnet_todo_backend.Models;
+using dotnet_todo_backend.interfaces;
 
 public class UserService : IUserService
 {
@@ -24,7 +26,7 @@ public class UserService : IUserService
         _appSettings = appSettings.Value;
     }
 
-    public AuthenticateResponse Authenticate(AuthenticateRequest model)
+    public AuthenticateResponse? Authenticate(AuthenticateRequest model)
     {
         var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
 
@@ -34,7 +36,19 @@ public class UserService : IUserService
         // authentication successful so generate jwt token
         var token = generateJwtToken(user);
 
-        return new AuthenticateResponse(user, token);
+        // serialize user and token to JSON strings
+        string userJson = JsonSerializer.Serialize(user);
+        string tokenJson = JsonSerializer.Serialize(token);
+
+        AuthenticateResponse response = new AuthenticateResponse
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Username = user.Username,
+            Token = tokenJson
+        };
+        return response;
     }
 
     public IEnumerable<User> GetAll()
@@ -42,7 +56,7 @@ public class UserService : IUserService
         return _users;
     }
 
-    public User GetById(int id)
+    public User? GetById(int id)
     {
         return _users.FirstOrDefault(x => x.Id == id);
     }

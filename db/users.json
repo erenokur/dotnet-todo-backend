@@ -1,10 +1,16 @@
 [
   {
-    "username": "user1",
-    "password": "password1"
+    "Id": 1,
+    "FirstName": "user1",
+    "LastName": "password1",
+    "Username": "user1",
+    "Password": "password1"
   },
   {
-    "username": "user2",
-    "password": "password2"
+    "id": 2,
+    "FirstName": "user2",
+    "LastName": "password2",
+    "Username": "user2",
+    "Password": "password2"
   }
 ]

@@ -4,11 +4,11 @@ using System.Text.Json.Serialization;
 
 public class User
 {
-    public int Id { get; set; }
-    public string FirstName { get; set; } = String.Empty;
-    public string LastName { get; set; } = String.Empty;
-    public string Username { get; set; } = String.Empty;
+    public int id { get; set; }
+    public string username { get; set; } = String.Empty;
+    public string email { get; set; } = String.Empty;
+    public string password { get; set; } = String.Empty;
 
     [JsonIgnore]
-    public string Password { get; set; } = String.Empty;
+    public DateTime created { get; set; }
 }

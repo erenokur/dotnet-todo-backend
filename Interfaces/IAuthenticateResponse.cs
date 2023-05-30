@@ -11,9 +11,9 @@ using dotnet_todo_backend.Models;
 
 public interface IAuthenticateResponse
 {
-    int Id { get; set; }
-    string FirstName { get; set; }
-    string LastName { get; set; }
-    string Username { get; set; }
-    string Token { get; set; }
+    int id { get; set; }
+    string username { get; set; }
+    string email { get; set; }
+    string password { get; set; }
+    string created { get; set; }
 }

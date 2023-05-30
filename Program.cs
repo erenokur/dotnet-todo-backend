@@ -1,4 +1,6 @@
 
+using dotnet_todo_backend.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -14,7 +16,9 @@ builder.Services.AddAuthentication("Bearer")
         options.Authority = "https://your_authority_url";
         options.Audience = "your_audience";
     });
-
+// Add services to the container.
+builder.Services.Configure<AppDatabase>(
+    builder.Configuration.GetSection("AppDatabase"));
 
 var app = builder.Build();
 

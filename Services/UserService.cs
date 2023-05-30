@@ -15,7 +15,7 @@ public class UserService : IUserService
 {
     private List<User> _users = new List<User>
     {
-        new User { Id = 1, FirstName = "Test", LastName = "User", Username = "test", Password = "test" }
+        new User { id = 1, username = "Test", email = "User", password = "test", created = DateTime.Now}
     };
 
     private readonly AppSettings _appSettings;
@@ -27,7 +27,7 @@ public class UserService : IUserService
 
     public AuthenticateResponse? Authenticate(AuthenticateRequest model)
     {
-        var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+        var user = _users.SingleOrDefault(x => x.username == model.Username && x.password == model.Password);
 
         // return null if user not found
         if (user == null) return null;
@@ -41,11 +41,11 @@ public class UserService : IUserService
 
         AuthenticateResponse response = new AuthenticateResponse
         {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Username = user.Username,
-            Token = tokenJson
+            id = user.id,
+            username = user.username,
+            email = user.email,
+            password = user.password,
+            created = tokenJson
         };
         return response;
     }
@@ -57,19 +57,18 @@ public class UserService : IUserService
 
     public User? GetById(int id)
     {
-        return _users.FirstOrDefault(x => x.Id == id);
+        return _users.FirstOrDefault(x => x.id == id);
     }
 
     // helper methods
 
     private string generateJwtToken(User user)
     {
-        // generate token that is valid for 7 days
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+            Subject = new ClaimsIdentity(new[] { new Claim("id", user.id.ToString()) }),
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };

@@ -1,5 +1,6 @@
 
 using dotnet_todo_backend.Models;
+using dotnet_todo_backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,16 +10,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer(options =>
-    {
-        options.Authority = "https://your_authority_url";
-        options.Audience = "your_audience";
-    });
-// Add services to the container.
-builder.Services.Configure<AppDatabase>(
-    builder.Configuration.GetSection("AppDatabase"));
+builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDB"));
+builder.Services.AddSingleton<MongoDBService>();
 
 var app = builder.Build();
 

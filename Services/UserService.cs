@@ -15,7 +15,7 @@ public class UserService : IUserService
 {
     private List<User> _users = new List<User>
     {
-        new User { id = 1, username = "Test", email = "User", password = "test", created = DateTime.Now}
+        new User { id = "1", username = "test", email = "User", password = "test", created = DateTime.Now}
     };
 
     private readonly AppSettings _appSettings;
@@ -55,7 +55,7 @@ public class UserService : IUserService
         return _users;
     }
 
-    public User? GetById(int id)
+    public User? GetById(string id)
     {
         return _users.FirstOrDefault(x => x.id == id);
     }

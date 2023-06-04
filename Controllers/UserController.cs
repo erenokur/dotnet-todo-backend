@@ -1,5 +1,6 @@
 using dotnet_todo_backend.interfaces;
 using dotnet_todo_backend.Models;
+using dotnet_todo_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +11,9 @@ namespace dotnet_todo_backend.Controllers;
 
 public class UserController : ControllerBase
 {
-    private IUserService _userService;
+    private UserService _userService;
 
-    public UserController(IUserService userService)
+    public UserController(UserService userService)
     {
         _userService = userService;
     }

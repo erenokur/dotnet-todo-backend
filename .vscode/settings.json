@@ -1,3 +1,5 @@
 {
+  "csharp.suppressDotnetWarnings": true,
+  "csharp.suppressDotnetLaunchJsonWarning": true,
   "cSpell.words": ["Bson", "Hmac"]
 }

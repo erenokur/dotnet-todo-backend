@@ -33,19 +33,16 @@ public class UserService : IUserService
         if (user == null) return null;
 
         // authentication successful so generate jwt token
-        var token = generateJwtToken(user);
+        var tokenJson = generateJwtToken(user);
 
         // serialize user and token to JSON strings
         string userJson = JsonSerializer.Serialize(user);
-        string tokenJson = JsonSerializer.Serialize(token);
 
         AuthenticateResponse response = new AuthenticateResponse
         {
             id = user.id,
             username = user.username,
-            email = user.email,
-            password = user.password,
-            created = tokenJson
+            token = tokenJson
         };
         return response;
     }

@@ -13,7 +13,5 @@ public interface IAuthenticateResponse
 {
     string id { get; set; }
     string username { get; set; }
-    string email { get; set; }
-    string password { get; set; }
-    string created { get; set; }
+    string token { get; set; }
 }

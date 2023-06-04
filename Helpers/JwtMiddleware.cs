@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
-using dotnet_todo_backend.Services;
+using dotnet_todo_backend.Models;
 using dotnet_todo_backend.interfaces;
 
 public class JwtMiddleware

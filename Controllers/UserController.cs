@@ -3,6 +3,7 @@ using dotnet_todo_backend.Models;
 using dotnet_todo_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace dotnet_todo_backend.Controllers;
 
@@ -11,11 +12,16 @@ namespace dotnet_todo_backend.Controllers;
 
 public class UserController : ControllerBase
 {
+    private readonly ILogger<UserController> _logger;
     private UserService _userService;
+    private AppSettings _appSettings;
 
-    public UserController(UserService userService)
+
+    public UserController(ILogger<UserController> logger, IOptions<AppSettings> appSettings)
     {
-        _userService = userService;
+        _userService = new UserService(appSettings);
+        _logger = logger;
+        _appSettings = appSettings.Value;
     }
 
     [HttpPost("authenticate")]

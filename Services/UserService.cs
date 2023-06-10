@@ -19,15 +19,14 @@ namespace dotnet_todo_backend.Services
     public class UserService : IUserService
     {
         private readonly IMongoCollection<User> _users;
-
         private readonly AppSettings _appSettings;
-
+        private readonly JwtHelper _jwtHelper;
+        private readonly DatabaseClient _databaseClient;
         public UserService(IOptions<AppSettings> appSettings)
         {
-            var client = new MongoClient(appSettings.Value.ConnectionString);
-            var database = client.GetDatabase(appSettings.Value.DatabaseName);
-            _users = database.GetCollection<User>("users");
-
+            _databaseClient = new DatabaseClient(appSettings);
+            _users = _databaseClient.GetUserCollection();
+            _jwtHelper = new JwtHelper(appSettings);
             _appSettings = appSettings.Value;
         }
 
@@ -40,7 +39,7 @@ namespace dotnet_todo_backend.Services
             if (!result) return null;
 
             // authentication successful so generate jwt token
-            var tokenJson = generateJwtToken(user);
+            var tokenJson = _jwtHelper.generateJwtToken(user);
 
             // serialize user and token to JSON strings
             string userJson = JsonSerializer.Serialize(user);
@@ -53,31 +52,44 @@ namespace dotnet_todo_backend.Services
             };
             return response;
         }
+        public RegisterRequest? Register(RegisterRequest model)
+        {
+            var user = _users.Find(x => x.email == model.email).SingleOrDefault();
+            if (user != null) return null;
+
+            // hash password
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.password);
+
+            // create user
+            User newUser = new User
+            {
+                email = model.email,
+                password = hashedPassword,
+                username = model.username,
+                created = DateTime.Now
+            };
+
+            // insert user
+            _users.InsertOne(newUser);
+
+            // return user without password
+            return new RegisterRequest
+            {
+                email = newUser.email,
+                username = newUser.username
+            };
+        }
 
         public IEnumerable<User> GetAll()
         {
-            return _users.Find(x => true).ToList();
+            return _users.Find(x => true).
+            Project<User>(Builders<User>.Projection.Exclude(u => u.password))
+            .ToList();
         }
 
         public User? GetById(string id)
         {
             return _users.Find(x => x.id == id).SingleOrDefault();
-        }
-
-        // helper methods
-
-        private string generateJwtToken(User user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.id.ToString()) }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
         }
     }
 }

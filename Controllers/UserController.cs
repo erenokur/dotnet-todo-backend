@@ -36,6 +36,17 @@ public class UserController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPost("register")]
+    public IActionResult Register(RegisterRequest model)
+    {
+        var response = _userService.Register(model);
+
+        if (response == null)
+            return BadRequest(new { message = "Email exist" });
+
+        return Ok(response);
+    }
+
     [Authorize]
     [HttpGet]
     public IActionResult GetAll()
@@ -48,11 +59,11 @@ public class UserController : ControllerBase
     [HttpGet("whoami")]
     public IActionResult WhoAmI()
     {
-        var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (HttpContext.User.Identity != null)
+        var userId = HttpContext.User.FindFirst("id")?.Value;
+        var userName = HttpContext.User.FindFirst("username")?.Value;
+        if (!string.IsNullOrEmpty(userName))
         {
-            var userName = HttpContext.User.Identity.Name;
-            return Ok(userName);
+            return Ok(new { user = userName, userId = userId });
         }
         else
         {

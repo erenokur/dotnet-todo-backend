@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using dotnet_todo_backend.interfaces;
 using dotnet_todo_backend.Models;
 using dotnet_todo_backend.Services;
@@ -41,5 +42,22 @@ public class UserController : ControllerBase
     {
         var users = _userService.GetAll();
         return Ok(users);
+    }
+
+    [Authorize]
+    [HttpGet("whoami")]
+    public IActionResult WhoAmI()
+    {
+        var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (HttpContext.User.Identity != null)
+        {
+            var userName = HttpContext.User.Identity.Name;
+            return Ok(userName);
+        }
+        else
+        {
+            return BadRequest(new { message = "Username or password is not found" });
+        }
+
     }
 }

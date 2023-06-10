@@ -12,6 +12,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using BCrypt.Net;
 
 namespace dotnet_todo_backend.Services
 {
@@ -32,10 +33,11 @@ namespace dotnet_todo_backend.Services
 
         public AuthenticateResponse? Authenticate(AuthenticateRequest model)
         {
-            var user = _users.Find(x => x.username == model.Username && x.password == model.Password).SingleOrDefault();
-
-            // return null if user not found
+            var user = _users.Find(x => x.email == model.email).SingleOrDefault();
             if (user == null) return null;
+
+            bool result = BCrypt.Net.BCrypt.Verify(model.password, user.password);
+            if (!result) return null;
 
             // authentication successful so generate jwt token
             var tokenJson = generateJwtToken(user);

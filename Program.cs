@@ -1,4 +1,3 @@
-
 using System.Text;
 using dotnet_todo_backend.Models;
 using dotnet_todo_backend.Services;
@@ -6,10 +5,18 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddCors();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MyPolicy",
+    builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
@@ -19,7 +26,6 @@ builder.Services.AddAuthentication("Bearer")
     {
         var appSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
         var secretKey = Encoding.UTF8.GetBytes(appSettings.Secret);
-        // Configure the necessary options for JWT authentication
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
@@ -34,19 +40,25 @@ builder.Services.AddAuthentication("Bearer")
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseHttpsRedirection();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseCors("MyPolicy");
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();

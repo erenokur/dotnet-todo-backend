@@ -1,4 +1,4 @@
 public interface IModifyTaskRequest
 {
-    string _id { get; set; }
+    string id { get; set; }
 }

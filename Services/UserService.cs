@@ -40,7 +40,7 @@ namespace dotnet_todo_backend.Services
             {
                 id = user.id,
                 username = user.username,
-                token = tokenJson
+                accessToken = tokenJson
             };
             return response;
         }

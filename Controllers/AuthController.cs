@@ -11,22 +11,22 @@ namespace dotnet_todo_backend.Controllers;
 [ApiController]
 [Route("[controller]")]
 
-public class UserController : ControllerBase
+public class AuthController : ControllerBase
 {
-    private readonly ILogger<UserController> _logger;
+    private readonly ILogger<AuthController> _logger;
     private UserService _userService;
     private AppSettings _appSettings;
 
 
-    public UserController(ILogger<UserController> logger, IOptions<AppSettings> appSettings)
+    public AuthController(ILogger<AuthController> logger, IOptions<AppSettings> appSettings)
     {
         _userService = new UserService(appSettings);
         _logger = logger;
         _appSettings = appSettings.Value;
     }
 
-    [HttpPost("authenticate")]
-    public IActionResult Authenticate(AuthenticateRequest model)
+    [HttpPost("login")]
+    public IActionResult login(AuthenticateRequest model)
     {
         var response = _userService.Authenticate(model);
 

@@ -28,14 +28,14 @@ namespace dotnet_todo_backend.Services
 
         public IEnumerable<Tasks>? UpdateTask(ModifyTaskRequest model)
         {
-            var task = _tasks.Find(x => x.id == model._id && x.userId == model.userId).SingleOrDefault();
+            var task = _tasks.Find(x => x.id == model.id && x.userId == model.userId).SingleOrDefault();
             if (task == null)
             {
                 return null;
             }
             task.completed = model.ModifyType == "completed" ? model.ModifyValue : task.completed;
             task.completed = model.ModifyType == "active" ? !model.ModifyValue : task.completed;
-            _tasks.ReplaceOne(x => x.id == model._id, task);
+            _tasks.ReplaceOne(x => x.id == model.id, task);
             var tasks = _tasks.Find(x => x.userId == task.userId).ToList();
             return tasks;
         }

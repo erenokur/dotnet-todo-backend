@@ -41,10 +41,10 @@ public class AuthController : ControllerBase
     {
         var response = _userService.Register(model);
 
-        if (response == null)
-            return BadRequest(new { message = "Email exist" });
+        if (response == false)
+            return BadRequest(new { message = "Register Failed" });
 
-        return Ok(response);
+        return Ok(new { message = "User registered successfully!" });
     }
 
     [Authorize]

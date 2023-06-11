@@ -44,10 +44,10 @@ namespace dotnet_todo_backend.Services
             };
             return response;
         }
-        public RegisterRequest? Register(RegisterRequest model)
+        public bool Register(RegisterRequest model)
         {
             var user = _users.Find(x => x.email == model.email).SingleOrDefault();
-            if (user != null) return null;
+            if (user != null) return false;
 
             // hash password
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.password);
@@ -65,11 +65,7 @@ namespace dotnet_todo_backend.Services
             _users.InsertOne(newUser);
 
             // return user without password
-            return new RegisterRequest
-            {
-                email = newUser.email,
-                username = newUser.username
-            };
+            return true;
         }
 
         public IEnumerable<Users> GetAll()

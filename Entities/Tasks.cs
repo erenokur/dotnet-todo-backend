@@ -9,7 +9,7 @@ public class Tasks
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string id { get; set; } = String.Empty;
+    public string _id { get; set; } = String.Empty;
     public string userId { get; set; } = String.Empty;
     public string title { get; set; } = String.Empty;
     public bool completed { get; set; } = false;

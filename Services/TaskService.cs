@@ -22,21 +22,21 @@ namespace dotnet_todo_backend.Services
         }
         public IEnumerable<Tasks> GetTasks(string userId)
         {
-            var tasks = _tasks.Find(x => x.userId == userId).ToList();
+            var tasks = _tasks.Find(x => x.userId == userId && x.active == true).ToList();
             return tasks;
         }
 
         public IEnumerable<Tasks>? UpdateTask(ModifyTaskRequest model)
         {
-            var task = _tasks.Find(x => x.id == model.id && x.userId == model.userId).SingleOrDefault();
+            var task = _tasks.Find(x => x._id == model._id && x.userId == model.userId).SingleOrDefault();
             if (task == null)
             {
                 return null;
             }
             task.completed = model.ModifyType == "completed" ? model.ModifyValue : task.completed;
-            task.completed = model.ModifyType == "active" ? !model.ModifyValue : task.completed;
-            _tasks.ReplaceOne(x => x.id == model.id, task);
-            var tasks = _tasks.Find(x => x.userId == task.userId).ToList();
+            task.active = model.ModifyType == "active" ? model.ModifyValue : task.active;
+            _tasks.ReplaceOne(x => x._id == model._id, task);
+            var tasks = _tasks.Find(x => x.userId == task.userId && x.active == true).ToList();
             return tasks;
         }
 
@@ -52,7 +52,7 @@ namespace dotnet_todo_backend.Services
                 modifyDate = DateTime.Now
             };
             _tasks.InsertOne(task);
-            var tasks = _tasks.Find(x => x.userId == task.userId).ToList();
+            var tasks = _tasks.Find(x => x.userId == task.userId && x.active == true).ToList();
             return tasks;
         }
 

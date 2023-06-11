@@ -7,16 +7,24 @@ namespace dotnet_todo_backend.Helpers;
 public class DatabaseClient
 {
     private readonly AppSettings _appSettings;
+    private readonly IMongoDatabase _databaseClient;
 
     public DatabaseClient(IOptions<AppSettings> appSettings)
     {
         _appSettings = appSettings.Value;
-    }
-
-    public IMongoCollection<User> GetUserCollection()
-    {
         var client = new MongoClient(_appSettings.ConnectionString);
         var database = client.GetDatabase(_appSettings.DatabaseName);
-        return database.GetCollection<User>("users");
+        _databaseClient = database;
+    }
+
+    public IMongoCollection<Users> GetUserCollection()
+    {
+
+        return _databaseClient.GetCollection<Users>("users");
+    }
+
+    public IMongoCollection<Tasks> GetTaskCollection()
+    {
+        return _databaseClient.GetCollection<Tasks>("tasks");
     }
 }

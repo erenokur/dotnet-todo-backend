@@ -15,7 +15,7 @@ public class JwtHelper
         _appSettings = appSettings.Value;
     }
 
-    public string generateJwtToken(User user)
+    public string generateJwtToken(Users user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_appSettings.Secret);

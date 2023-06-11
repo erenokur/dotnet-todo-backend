@@ -3,22 +3,14 @@ using dotnet_todo_backend.Helpers;
 using dotnet_todo_backend.interfaces;
 using dotnet_todo_backend.Models;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
 using System.Text.Json;
-using BCrypt.Net;
 
 namespace dotnet_todo_backend.Services
 {
     public class UserService : IUserService
     {
-        private readonly IMongoCollection<User> _users;
+        private readonly IMongoCollection<Users> _users;
         private readonly AppSettings _appSettings;
         private readonly JwtHelper _jwtHelper;
         private readonly DatabaseClient _databaseClient;
@@ -61,7 +53,7 @@ namespace dotnet_todo_backend.Services
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.password);
 
             // create user
-            User newUser = new User
+            Users newUser = new Users
             {
                 email = model.email,
                 password = hashedPassword,
@@ -80,14 +72,14 @@ namespace dotnet_todo_backend.Services
             };
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<Users> GetAll()
         {
             return _users.Find(x => true).
-            Project<User>(Builders<User>.Projection.Exclude(u => u.password))
+            Project<Users>(Builders<Users>.Projection.Exclude(u => u.password))
             .ToList();
         }
 
-        public User? GetById(string id)
+        public Users? GetById(string id)
         {
             return _users.Find(x => x.id == id).SingleOrDefault();
         }

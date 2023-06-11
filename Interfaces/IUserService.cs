@@ -12,6 +12,6 @@ using dotnet_todo_backend.Models;
 public interface IUserService
 {
     AuthenticateResponse? Authenticate(AuthenticateRequest model);
-    IEnumerable<User> GetAll();
-    User? GetById(string id);
+    IEnumerable<Users> GetAll();
+    Users? GetById(string id);
 }

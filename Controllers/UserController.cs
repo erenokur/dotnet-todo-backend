@@ -56,14 +56,14 @@ public class UserController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet("whoami")]
-    public IActionResult WhoAmI()
+    [HttpGet("getUserData")]
+    public IActionResult getUserData()
     {
         var userId = HttpContext.User.FindFirst("id")?.Value;
         var userName = HttpContext.User.FindFirst("username")?.Value;
         if (!string.IsNullOrEmpty(userName))
         {
-            return Ok(new { user = userName, userId = userId });
+            return Ok(new { username = userName, userId = userId });
         }
         else
         {

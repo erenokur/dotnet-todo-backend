@@ -12,13 +12,11 @@ namespace dotnet_todo_backend.Services
     public class TaskService
     {
         private readonly IMongoCollection<Tasks> _tasks;
-        private readonly AppSettings _appSettings;
         private readonly DatabaseClient _databaseClient;
         public TaskService(IOptions<AppSettings> appSettings)
         {
             _databaseClient = new DatabaseClient(appSettings);
             _tasks = _databaseClient.GetTaskCollection();
-            _appSettings = appSettings.Value;
         }
         public IEnumerable<Tasks> GetTasks(string userId)
         {

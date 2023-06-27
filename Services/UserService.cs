@@ -11,7 +11,6 @@ namespace dotnet_todo_backend.Services
     public class UserService : IUserService
     {
         private readonly IMongoCollection<Users> _users;
-        private readonly AppSettings _appSettings;
         private readonly JwtHelper _jwtHelper;
         private readonly DatabaseClient _databaseClient;
         public UserService(IOptions<AppSettings> appSettings)
@@ -19,7 +18,6 @@ namespace dotnet_todo_backend.Services
             _databaseClient = new DatabaseClient(appSettings);
             _users = _databaseClient.GetUserCollection();
             _jwtHelper = new JwtHelper(appSettings);
-            _appSettings = appSettings.Value;
         }
 
         public AuthenticateResponse? Authenticate(AuthenticateRequest model)
@@ -36,7 +34,7 @@ namespace dotnet_todo_backend.Services
             // serialize user and token to JSON strings
             string userJson = JsonSerializer.Serialize(user);
 
-            AuthenticateResponse response = new AuthenticateResponse
+            AuthenticateResponse response = new()
             {
                 id = user.id,
                 username = user.username,
@@ -53,7 +51,7 @@ namespace dotnet_todo_backend.Services
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.password);
 
             // create user
-            Users newUser = new Users
+            Users newUser = new ()
             {
                 email = model.email,
                 password = hashedPassword,
